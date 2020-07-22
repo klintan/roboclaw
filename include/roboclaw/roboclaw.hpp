@@ -1,13 +1,13 @@
 /*
- * roboclaw.h - header file defines Roboclaw Class 
+ * roboclaw.hpp - header file defines Roboclaw Class 
  *
  * This code is a modified version of the Ion Motion Control Arduino library.
  * To view the code in its original form, download it at
  *     http://downloads.ionmc.com/code/arduino.zip 
  */
 
-#ifndef ROBOCLAW_H
-#define ROBOCLAW_H
+#ifndef ROBOCLAW_HPP_
+#define ROBOCLAW_HPP_
 
 #include <stdarg.h>
 #include <stdint.h>
