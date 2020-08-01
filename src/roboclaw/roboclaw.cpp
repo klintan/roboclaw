@@ -18,7 +18,7 @@
 /*
  * Constructor opens port at desired baudrate
  */
-Roboclaw::Roboclaw(std::string port, uint32_t baudrate)
+Roboclaw::Roboclaw(std::string &port, uint32_t baudrate)
 {
     /* initialize pointer to a new Serial port object */
     port_ = new serial::Serial(port, baudrate, serial::Timeout::simpleTimeout(100));
@@ -916,8 +916,6 @@ bool Roboclaw::SetPinFunctions(uint8_t address, uint8_t S3mode, uint8_t S4mode, 
 
 bool Roboclaw::GetPinFunctions(uint8_t address, uint8_t &S3mode, uint8_t &S4mode, uint8_t &S5mode)
 {
-    uint8_t crc;
-    bool valid = false;
     uint8_t val1, val2, val3;
     uint8_t trys = MAXRETRY;
     int16_t data;
