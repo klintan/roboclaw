@@ -457,100 +457,283 @@ uint32_t Roboclaw::read4_1(uint8_t address, uint8_t cmd, uint8_t *status, bool *
 /************************************************************
  * original methods unchanged from original Arduino library *
  ************************************************************/
+
+/**
+ * Drive motor 1 forward. Valid data range is 0 - 127. A value of 127 = full speed forward, 64 =
+ * about half speed forward and 0 = full stop.
+ *
+ * @param address Controller address value from 0x80 to 0x87.
+ * @param speed 0 - 127 speed where 127 full speed, 0 is stopped.
+ * @return true if success.
+ */
 bool Roboclaw::ForwardM1(uint8_t address, uint8_t speed)
 {
     return write_n(3, address, M1FORWARD, speed);
 }
 
+/**
+ * Drive motor 1 backwards. Valid data range is 0 - 127. A value of 127 full speed backwards, 64 =
+ * about half speed backward and 0 = full stop.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed 0 - 127 speed where 127 full speed, 0 is stopped.
+ * @return true if success.
+ */
 bool Roboclaw::BackwardM1(uint8_t address, uint8_t speed)
 {
     return write_n(3, address, M1BACKWARD, speed);
 }
 
+/**
+ * attention: SetMainVoltages is the preferred method to be used. Sets main battery (B- / B+) minimum voltage level. If the battery voltages drops below the set
+ * voltage level RoboClaw will stop driving the motors. The voltage is set in .2 volt increments. A
+ * value of 0 sets the minimum value allowed which is 6V. The valid data range is 0 - 140 (6V -
+ * 34V). The formula for calculating the voltage is: (Desired Volts - 6) x 5 = Value. Examples of
+ * valid values are 6V = 0, 8V = 10 and 11V = 25.
+ *
+ * @param address Controller address value from 0x80 to 0x87.
+ * @param voltage 0 - 140, which corresponds to 6V - 34 V.
+ * @return true if success.
+ */
 bool Roboclaw::SetMinVoltageMainBattery(uint8_t address, uint8_t voltage)
 {
     return write_n(3, address, SETMINMB, voltage);
 }
 
+/**
+ * attention: SetMainVoltages is the preferred method to be used. Sets main battery (B- / B+) maximum voltage level. 
+ * The valid data range is 30 - 175 (6V - 34V). During regenerative breaking a back voltage is 
+ * applied to charge the battery. When using a power supply, by setting the maximum voltage level, 
+ * RoboClaw will, before exceeding it, go into hard braking mode until the voltage drops below the 
+ * maximum value set. This will prevent overvoltage conditions when using power supplies. 
+ * The formula for calculating the voltage is: Desired Volts x 5.12 = Value. 
+ * Examples of valid values are 12V = 62, 16V = 82 and 24V = 123.
+ *
+ * @param address Controller address value from 0x80 to 0x87.
+ * @param voltage 0 - 140, which corresponds to 6V - 34 V.
+ * @return true if success.
+ */
 bool Roboclaw::SetMaxVoltageMainBattery(uint8_t address, uint8_t voltage)
 {
     return write_n(3, address, SETMAXMB, voltage);
 }
 
+/**
+ * Drive motor 2 forward. Valid data range is 0 - 127. A value of 127 full speed forward, 64 = about
+ * half speed forward and 0 = full stop.
+ *
+ * @param address Controller address value from 0x80 to 0x87.
+ * @param speed 0 - 127 speed where 127 full speed, 0 is stopped.
+ * @return true if success.
+ */
 bool Roboclaw::ForwardM2(uint8_t address, uint8_t speed)
 {
     return write_n(3, address, M2FORWARD, speed);
 }
 
+/**
+ * Drive motor 2 backwards. Valid data range is 0 - 127. A value of 127 full speed backwards, 64 =
+ * about half speed backward and 0 = full stop.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed 0 - 127 speed where 127 full speed, 0 is stopped.
+ * @return true if success.
+ */
 bool Roboclaw::BackwardM2(uint8_t address, uint8_t speed)
 {
     return write_n(3, address, M2BACKWARD, speed);
 }
 
+/**
+ * Drive motor 1 forward or reverse. Valid data range is 0 - 127. A value of 0 = full speed reverse,
+ * 64 = stop and 127 = full speed forward.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed 0 - 127 speed where 127 full speed forward, 64 is stopped, 0 is full speed reverse.
+ * @return true if success.
+ */
 bool Roboclaw::ForwardBackwardM1(uint8_t address, uint8_t speed)
 {
     return write_n(3, address, M17BIT, speed);
 }
 
+/**
+ * Drive motor 1 forward or reverse. Valid data range is 0 - 127. A value of 0 = full speed reverse,
+ * 64 = stop and 127 = full speed forward.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed 0 - 127 speed where 127 full speed forward, 64 is stopped, 0 is full speed reverse.
+ * @return true if success.
+ */
 bool Roboclaw::ForwardBackwardM2(uint8_t address, uint8_t speed)
 {
     return write_n(3, address, M27BIT, speed);
 }
 
+/**
+ * Drive forward in mix mode (differential drive mode). Valid data range is 0 - 127. A value of 0 = full stop and 127 = full
+ * forward.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed 0 - 127 speed where 127 full speed, 0 is stopped.
+ * @return true if success.
+ */
 bool Roboclaw::ForwardMixed(uint8_t address, uint8_t speed)
 {
     return write_n(3, address, MIXEDFORWARD, speed);
 }
 
+/**
+ * Drive backward in mix mode (differential drive mode). Valid data range is 0 - 127. A value of 0 = full stop and 127 = full
+ * reverse.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed 0 - 127 speed where 127 full reverse, 0 is stopped.
+ * @return true if success.
+ */
 bool Roboclaw::BackwardMixed(uint8_t address, uint8_t speed)
 {
     return write_n(3, address, MIXEDBACKWARD, speed);
 }
 
+/**
+ * Turn right in mix mode (differential drive mode). Valid data range is 0 - 127. A value of 0 = stop turn and 127 = full
+ * speed turn.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed 0 - 127 speed where 0 stop turn, 127 full speed turn.
+ * @return true if success.
+ */
 bool Roboclaw::TurnRightMixed(uint8_t address, uint8_t speed)
 {
     return write_n(3, address, MIXEDRIGHT, speed);
 }
 
+/**
+ * Turn left in mix mode (differential drive mode). Valid data range is 0 - 127. A value of 0 = stop turn and 127 = full
+ * speed turn.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed 0 - 127 speed where 0 stop turn, 127 full speed turn.
+ * @return true if success.
+ */
 bool Roboclaw::TurnLeftMixed(uint8_t address, uint8_t speed)
 {
     return write_n(3, address, MIXEDLEFT, speed);
 }
 
+/**
+ * Drive forward or backwards. Valid data range is 0 - 127. A value of 0 = full backward, 64 = stop
+ * and 127 = full forward
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed 0 - 127 value of 0 = full backward, 64 = stop and 127 = full forward
+ * @return true if success.
+ */
 bool Roboclaw::ForwardBackwardMixed(uint8_t address, uint8_t speed)
 {
     return write_n(3, address, MIXEDFB, speed);
 }
 
+/**
+ * Turn left or right. Valid data range is 0 - 127. A value of 0 = full left, 0 = stop turn and 127 = full
+ * right.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed 0 - 127, value of 0 = full left, 0 = stop turn and 127 = full right.
+ * @return true if success.
+ */
 bool Roboclaw::LeftRightMixed(uint8_t address, uint8_t speed)
 {
     return write_n(3, address, MIXEDLR, speed);
 }
 
+/**
+ * Read M1 encoder count/position.
+ * Quadrature encoders have a range of 0 to 4,294,967,295. Absolute encoder values are converted
+ * from an analog voltage into a value from 0 to 2047 for the full 2v range.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param status The Status byte tracks counter underflow, direction and overflow. The byte value represents:
+ * Bit0 - Counter Underflow (1= Underflow Occurred, Cleared After Reading)
+ * Bit1 - Direction (0 = Forward, 1 = Backwards)
+ * Bit2 - Counter Overflow (1= Underflow Occurred, Cleared After Reading) 
+ * @param valid true if success
+ * @return value of encoder.
+ */
 uint32_t Roboclaw::ReadEncM1(uint8_t address, uint8_t *status, bool *valid)
 {
     return read4_1(address, GETM1ENC, status, valid);
 }
 
+/**
+ * Read M2 encoder count/position.
+ * Quadrature encoders have a range of 0 to 4,294,967,295. Absolute encoder values are converted
+ * from an analog voltage into a value from 0 to 2047 for the full 2v range.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param status The Status byte tracks counter underflow, direction and overflow. The byte value represents:
+ * Bit0 - Counter Underflow (1= Underflow Occurred, Cleared After Reading)
+ * Bit1 - Direction (0 = Forward, 1 = Backwards)
+ * Bit2 - Counter Overflow (1= Underflow Occurred, Cleared After Reading) 
+ * @param valid true if success
+ * @return value of encoder.
+ */
 uint32_t Roboclaw::ReadEncM2(uint8_t address, uint8_t *status, bool *valid)
 {
     return read4_1(address, GETM2ENC, status, valid);
 }
 
+/**
+ * Read M1 counter speed. Returned value is in pulses per second. RoboClaw keeps track of how
+ * many pulses received per second for both encoder channels. 
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param status Status indicates the direction (0 – forward, 1 - backward).
+ * @param valid true if success
+ * @return value in pulses per second.
+ */
 uint32_t Roboclaw::ReadSpeedM1(uint8_t address, uint8_t *status, bool *valid)
 {
     return read4_1(address, GETM1SPEED, status, valid);
 }
 
+/**
+ * Read M2 counter speed. Returned value is in pulses per second. RoboClaw keeps track of how
+ * many pulses received per second for both encoder channels. 
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param status Status indicates the direction (0 – forward, 1 - backward).
+ * @param valid true if success
+ * @return value in pulses per second.
+ */
 uint32_t Roboclaw::ReadSpeedM2(uint8_t address, uint8_t *status, bool *valid)
 {
     return read4_1(address, GETM2SPEED, status, valid);
 }
 
+/**
+ * Will reset both quadrature decoder counters to zero. This command applies to quadrature
+ * encoders only. 
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @return true if success.
+ */
 bool Roboclaw::ResetEncoders(uint8_t address)
 {
     return write_n(2, address, RESETENC);
 }
+
+/**
+ * Read RoboClaw firmware version. Returns up to 48 bytes(depending on the Roboclaw model)
+ * and is terminated by a line feed character and a null character.
+ * The command will return up to 48 bytes. The return string includes the product name and
+ * firmware version. The return string is terminated with a line feed (10) and null (0) character.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param version char pointer to the version string
+ * @return true if success.
+ */
 
 bool Roboclaw::ReadVersion(uint8_t address, char *version)
 {
@@ -603,11 +786,27 @@ bool Roboclaw::ReadVersion(uint8_t address, char *version)
     return false;
 }
 
+/**
+ * Set the value of the Encoder 1 register. Useful when homing motor 1. This command applies to
+ * quadrature encoders only.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param val value to set.
+ * @return true if success.
+ */
 bool Roboclaw::SetEncM1(uint8_t address, int val)
 {
     return write_n(6, address, SETM1ENCCOUNT, SetDWORDval(val));
 }
 
+/**
+ * Set the value of the Encoder 2 register. Useful when homing motor 1. This command applies to
+ * quadrature encoders only.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param val value to set.
+ * @return true if success.
+ */
 bool Roboclaw::SetEncM2(uint8_t address, int val)
 {
     return write_n(6, address, SETM2ENCCOUNT, SetDWORDval(val));
