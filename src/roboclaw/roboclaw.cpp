@@ -812,26 +812,83 @@ bool Roboclaw::SetEncM2(uint8_t address, int val)
     return write_n(6, address, SETM2ENCCOUNT, SetDWORDval(val));
 }
 
+/**
+ * Read the main battery voltage level connected to B+ and B- terminals. The voltage is returned in
+ * 10ths of a volt(eg 300 = 30v).
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param valid true or false.
+ * @return voltage value.
+ */
 uint16_t Roboclaw::ReadMainBatteryVoltage(uint8_t address, bool *valid)
 {
     return read2(address, GETMBATT, valid);
 }
 
+/**
+ * Read a logic battery voltage level connected to LB+ and LB- terminals. The voltage is returned in
+ * 10ths of a volt(eg 50 = 5v).
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param valid true or false.
+ * @return voltage value.
+ */
 uint16_t Roboclaw::ReadLogicBatteryVoltage(uint8_t address, bool *valid)
 {
     return read2(address, GETLBATT, valid);
 }
 
+/**
+ * Sets logic input (LB- / LB+) minimum voltage level. RoboClaw will shut down with an error if
+* the voltage is below this level. The voltage is set in .2 volt increments. A value of 0 sets the
+* minimum value allowed which is 6V. The valid data range is 0 - 140 (6V - 34V). The formula for
+* calculating the voltage is: (Desired Volts - 6) x 5 = Value. Examples of valid values are 6V = 0,
+* 8V = 10 and 11V = 25. 
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param voltage 0 - 140 (6V - 34V) 
+ * @return true if success.
+ */
 bool Roboclaw::SetMinVoltageLogicBattery(uint8_t address, uint8_t voltage)
 {
     return write_n(3, address, SETMINLB, voltage);
 }
 
+/**
+ * Sets logic input (LB- / LB+) maximum voltage level. The valid data range is 30 - 175 (6V -
+ * 34V). RoboClaw will shutdown with an error if the voltage is above this level. The formula for
+ * calculating the voltage is: Desired Volts x 5.12 = Value. Examples of valid values are 12V = 62,
+ * 16V = 82 and 24V = 123.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param voltage 30 - 175 (6V - 34V) 
+ * @return true if success.
+ */
 bool Roboclaw::SetMaxVoltageLogicBattery(uint8_t address, uint8_t voltage)
 {
     return write_n(3, address, SETMAXLB, voltage);
 }
 
+/**
+ * M1 Several motor and quadrature combinations can be used with RoboClaw. In some cases the
+ * default PID values will need to be tuned for the systems being driven. This gives greater
+ * flexibility in what motor and encoder combinations can be used. The RoboClaw PID system
+ * consist of four constants starting with QPPS, P = Proportional, I= Integral and D= Derivative.
+ * The defaults values are:
+ * QPPS = 44000
+ * P = 0x00010000
+ * I = 0x00008000
+ * D = 0x00004000
+ * QPPS is the speed of the encoder when the motor is at 100% power. P, I, D are the default
+ * values used after a reset.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param kp_fp proportional value in PID controller
+ * @param ki_fp integral value in PID controller
+ * @param kd_fp derivative value in PID controller
+ * @param qpps the speed of the encoder when the motor is at 100% power.
+ * @return true if success.
+ */
 bool Roboclaw::SetM1VelocityPID(uint8_t address, float kp_fp, float ki_fp, float kd_fp, uint32_t qpps)
 {
     uint32_t kp = kp_fp * 65536;
@@ -840,6 +897,26 @@ bool Roboclaw::SetM1VelocityPID(uint8_t address, float kp_fp, float ki_fp, float
     return write_n(18, address, SETM1PID, SetDWORDval(kd), SetDWORDval(kp), SetDWORDval(ki), SetDWORDval(qpps));
 }
 
+/**
+ * M2 Several motor and quadrature combinations can be used with RoboClaw. In some cases the
+ * default PID values will need to be tuned for the systems being driven. This gives greater
+ * flexibility in what motor and encoder combinations can be used. The RoboClaw PID system
+ * consist of four constants starting with QPPS, P = Proportional, I= Integral and D= Derivative.
+ * The defaults values are:
+ * QPPS = 44000
+ * P = 0x00010000
+ * I = 0x00008000
+ * D = 0x00004000
+ * QPPS is the speed of the encoder when the motor is at 100% power. P, I, D are the default
+ * values used after a reset.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param kp_fp proportional value in PID controller
+ * @param ki_fp integral value in PID controller
+ * @param kd_fp derivative value in PID controller
+ * @param qpps the speed of the encoder when the motor is at 100% power.
+ * @return true if success.
+ */
 bool Roboclaw::SetM2VelocityPID(uint8_t address, float kp_fp, float ki_fp, float kd_fp, uint32_t qpps)
 {
     uint32_t kp = kp_fp * 65536;
@@ -848,70 +925,259 @@ bool Roboclaw::SetM2VelocityPID(uint8_t address, float kp_fp, float ki_fp, float
     return write_n(18, address, SETM2PID, SetDWORDval(kd), SetDWORDval(kp), SetDWORDval(ki), SetDWORDval(qpps));
 }
 
+/**
+ * M1 Read the pulses counted in that last 300th of a second. This is an unfiltered version of command
+ * 18. Command 30 can be used to make a independent PID routine. Value returned is in encoder
+ * counts per second. 
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param status Status indicates the direction (0 – forward, 1 - backward).
+ * @param valid true if success
+ * @return speed value.
+ */
 uint32_t Roboclaw::ReadISpeedM1(uint8_t address, uint8_t *status, bool *valid)
 {
     return read4_1(address, GETM1ISPEED, status, valid);
 }
 
+/**
+ * M1 Read the pulses counted in that last 300th of a second. This is an unfiltered version of command
+ * 18. Command 30 can be used to make a independent PID routine. Value returned is in encoder
+ * counts per second. 
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param status Status indicates the direction (0 – forward, 1 - backward).
+ * @param valid true if success
+ * @return speed value.
+ */
 uint32_t Roboclaw::ReadISpeedM2(uint8_t address, uint8_t *status, bool *valid)
 {
     return read4_1(address, GETM2ISPEED, status, valid);
 }
 
+/**
+ * Drive M1 using a duty cycle value. The duty cycle is used to control the speed of the motor
+ * without a quadrature encoder.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param duty The duty value is signed and the range is -32767 to +32767 (eg. +-100% duty). 
+ * @return true if success.
+ */
 bool Roboclaw::DutyM1(uint8_t address, uint16_t duty)
 {
     return write_n(4, address, M1DUTY, SetWORDval(duty));
 }
 
+/**
+ * Drive M2 using a duty cycle value. The duty cycle is used to control the speed of the motor
+ * without a quadrature encoder.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param duty The duty value is signed and the range is -32767 to +32767 (eg. +-100% duty). 
+ * @return true if success.
+ */
 bool Roboclaw::DutyM2(uint8_t address, uint16_t duty)
 {
     return write_n(4, address, M2DUTY, SetWORDval(duty));
 }
 
+/**
+ * Drive both M1 and M2 using a duty cycle value. The duty cycle is used to control the speed of
+ * the motor without a quadrature encoder. 
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param duty The duty value is signed and the range is -32767 to +32767 (eg. +-100% duty). 
+ * @return true if success.
+ */
 bool Roboclaw::DutyM1M2(uint8_t address, uint16_t duty1, uint16_t duty2)
 {
     return write_n(6, address, MIXEDDUTY, SetWORDval(duty1), SetWORDval(duty2));
 }
 
+/**
+ * Drive M1 using a speed value. The sign indicates which direction the motor will turn. This
+ * command is used to drive the motor by quad pulses per second. Different quadrature encoders
+ * will have different rates at which they generate the incoming pulses. The values used will differ
+ * from one encoder to another. Once a value is sent the motor will begin to accelerate as fast as
+ * possible until the defined rate is reached.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed speed of motor 
+ * @return true if success.
+ */
 bool Roboclaw::SpeedM1(uint8_t address, uint32_t speed)
 {
     return write_n(6, address, M1SPEED, SetDWORDval(speed));
 }
 
+/**
+ * Drive M2 using a speed value. The sign indicates which direction the motor will turn. This
+ * command is used to drive the motor by quad pulses per second. Different quadrature encoders
+ * will have different rates at which they generate the incoming pulses. The values used will differ
+ * from one encoder to another. Once a value is sent the motor will begin to accelerate as fast as
+ * possible until the defined rate is reached.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed speed of motor 
+ * @return true if success.
+ */
 bool Roboclaw::SpeedM2(uint8_t address, uint32_t speed)
 {
     return write_n(6, address, M2SPEED, SetDWORDval(speed));
 }
 
+/**
+ * Drive M1 and M2 in the same command using a signed speed value. The sign indicates which
+ * direction the motor will turn. This command is used to drive both motors by quad pulses per
+ * second. Different quadrature encoders will have different rates at which they generate the
+ * incoming pulses. The values used will differ from one encoder to another. Once a value is sent
+ * the motor will begin to accelerate as fast as possible until the rate defined is reached.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed1 speed of motor m1
+ * @param speed2 speed of motor m2
+ * @return true if success.
+ */
 bool Roboclaw::SpeedM1M2(uint8_t address, uint32_t speed1, uint32_t speed2)
 {
     return write_n(10, address, MIXEDSPEED, SetDWORDval(speed1), SetDWORDval(speed2));
 }
 
+/**
+ * Drive M1 with a signed speed and acceleration value. The sign indicates which direction the
+ * motor will run. The acceleration values are not signed. This command is used to drive the motor
+ * by quad pulses per second and using an acceleration value for ramping. Different quadrature
+ * encoders will have different rates at which they generate the incoming pulses. The values used
+ * will differ from one encoder to another. Once a value is sent the motor will begin to accelerate
+ * incrementally until the rate defined is reached.
+ * The acceleration is measured in speed increase per second. An acceleration value of 12,000
+ * QPPS with a speed of 12,000 QPPS would accelerate a motor from 0 to 12,000 QPPS in 1
+ * second. Another example would be an acceleration value of 24,000 QPPS and a speed value of
+ * 12,000 QPPS would accelerate the motor to 12,000 QPPS in 0.5 seconds
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param accel acceleration
+ * @param speed speed of motor
+ * @return true if success.
+ */
 bool Roboclaw::SpeedAccelM1(uint8_t address, uint32_t accel, uint32_t speed)
 {
     return write_n(10, address, M1SPEEDACCEL, SetDWORDval(accel), SetDWORDval(speed));
 }
 
+/**
+ * Drive M2 with a signed speed and acceleration value. The sign indicates which direction the
+ * motor will run. The acceleration values are not signed. This command is used to drive the motor
+ * by quad pulses per second and using an acceleration value for ramping. Different quadrature
+ * encoders will have different rates at which they generate the incoming pulses. The values used
+ * will differ from one encoder to another. Once a value is sent the motor will begin to accelerate
+ * incrementally until the rate defined is reached.
+ * The acceleration is measured in speed increase per second. An acceleration value of 12,000
+ * QPPS with a speed of 12,000 QPPS would accelerate a motor from 0 to 12,000 QPPS in 1
+ * second. Another example would be an acceleration value of 24,000 QPPS and a speed value of
+ * 12,000 QPPS would accelerate the motor to 12,000 QPPS in 0.5 seconds
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param accel acceleration
+ * @param speed speed of motor
+ * @return true if success.
+ */
 bool Roboclaw::SpeedAccelM2(uint8_t address, uint32_t accel, uint32_t speed)
 {
     return write_n(10, address, M2SPEEDACCEL, SetDWORDval(accel), SetDWORDval(speed));
 }
+
+/**
+ * Drive M1 and M2 in the same command using one value for acceleration and two signed speed
+ * values for each motor. The sign indicates which direction the motor will run. The acceleration
+ * value is not signed. The motors are sync during acceleration. This command is used to drive
+ * the motor by quad pulses per second and using an acceleration value for ramping. Different
+ * quadrature encoders will have different rates at which they generate the incoming pulses. The
+ * values used will differ from one encoder to another. Once a value is sent the motor will begin to
+ * accelerate incrementally until the rate defined is reached.
+ * The acceleration is measured in speed increase per second. An acceleration value of 12,000
+ * QPPS with a speed of 12,000 QPPS would accelerate a motor from 0 to 12,000 QPPS in 1
+ * second. Another example would be an acceleration value of 24,000 QPPS and a speed value of
+ * 12,000 QPPS would accelerate the motor to 12,000 QPPS in 0.5 seconds
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param accel acceleration
+ * @param speed speed of motor
+ * @return true if success.
+ */
 bool Roboclaw::SpeedAccelM1M2(uint8_t address, uint32_t accel, uint32_t speed1, uint32_t speed2)
 {
     return write_n(14, address, MIXEDSPEEDACCEL, SetDWORDval(accel), SetDWORDval(speed1), SetDWORDval(speed2));
 }
 
+/**
+ * Drive M1 with a signed speed and distance value. The sign indicates which direction the motor
+ * will run. The distance value is not signed. This command is buffered. This command is used to
+ * control the top speed and total distance traveled by the motor. Each motor channel M1 and M2
+ * have separate buffers. This command will execute immediately if no other command for that
+ * channel is executing, otherwise the command will be buffered in the order it was sent. Any
+ * buffered or executing command can be stopped when a new command is issued by setting the
+ * Flag argument. All values used are in quad pulses per second.
+ * The flag argument can be set to a 1 or 0. If a value of 0 is used the command will be buffered
+ * and executed in the order sent. If a value of 1 is used the current running command is stopped,
+ * any other commands in the buffer are deleted and the new command is executed.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed speed of motor
+ * @param distance distance to drice
+ * @param flag  set to a 1 or 0. If a value of 0 is used the command will be buffered
+ * and executed in the order sent. If a value of 1 is used the current running command is stopped,
+ * any other commands in the buffer are deleted and the new command is executed
+ * @return true if success.
+ */
 bool Roboclaw::SpeedDistanceM1(uint8_t address, uint32_t speed, uint32_t distance, uint8_t flag)
 {
     return write_n(11, address, M1SPEEDDIST, SetDWORDval(speed), SetDWORDval(distance), flag);
 }
 
+/**
+ * Drive M2 with a signed speed and distance value. The sign indicates which direction the motor
+ * will run. The distance value is not signed. This command is buffered. This command is used to
+ * control the top speed and total distance traveled by the motor. Each motor channel M1 and M2
+ * have separate buffers. This command will execute immediately if no other command for that
+ * channel is executing, otherwise the command will be buffered in the order it was sent. Any
+ * buffered or executing command can be stopped when a new command is issued by setting the
+ * Flag argument. All values used are in quad pulses per second.
+ * The flag argument can be set to a 1 or 0. If a value of 0 is used the command will be buffered
+ * and executed in the order sent. If a value of 1 is used the current running command is stopped,
+ * any other commands in the buffer are deleted and the new command is executed.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed speed of motor
+ * @param distance distance to drice
+ * @param flag  set to a 1 or 0. If a value of 0 is used the command will be buffered
+ * and executed in the order sent. If a value of 1 is used the current running command is stopped,
+ * any other commands in the buffer are deleted and the new command is executed
+ * @return true if success.
+ */
 bool Roboclaw::SpeedDistanceM2(uint8_t address, uint32_t speed, uint32_t distance, uint8_t flag)
 {
     return write_n(11, address, M2SPEEDDIST, SetDWORDval(speed), SetDWORDval(distance), flag);
 }
 
+/**
+ * Drive M1 and M2 with a speed and distance value. The sign indicates which direction the motor
+ * will run. The distance value is not signed. This command is buffered. Each motor channel M1
+ * and M2 have separate buffers. This command will execute immediately if no other command for
+ * that channel is executing, otherwise the command will be buffered in the order it was sent. Any
+ * buffered or executing command can be stopped when a new command is issued by setting the
+ * Buffer argument. All values used are in quad pulses per second.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed1 speed of motor 1
+ * @param distance1 distance for motor 1
+ * @param speed1 speed of motor 2
+ * @param distance1 distance for motor 2
+ * @param flag  set to a 1 or 0. If a value of 0 is used the command will be buffered
+ * and executed in the order sent. If a value of 1 is used the current running command is stopped,
+ * any other commands in the buffer are deleted and the new command is executed
+ * @return true if success.
+ */
 bool Roboclaw::SpeedDistanceM1M2(uint8_t address, uint32_t speed1, uint32_t distance1, uint32_t speed2, uint32_t distance2, uint8_t flag)
 {
     return write_n(19, address, MIXEDSPEEDDIST, SetDWORDval(speed1), SetDWORDval(distance1), SetDWORDval(speed2), SetDWORDval(distance2), flag);
