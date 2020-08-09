@@ -3,21 +3,21 @@
  *
  * This code is a modified version of the Ion Motion Control Arduino library.
  * To view the code in its original form, download it at
- *     http://downloads.ionmc.com/code/arduino.zip 
+ *     http://downloads.ionmc.com/code/arduino.zip
  */
 
 #include <roboclaw/roboclaw.hpp>
 
-/*
- * Macros taken directly from Arduino Library
- */
+ /*
+  * Macros taken directly from Arduino Library
+  */
 #define MAXRETRY 2
 #define SetDWORDval(arg) (uint8_t)(((uint32_t)arg) >> 24), (uint8_t)(((uint32_t)arg) >> 16), (uint8_t)(((uint32_t)arg) >> 8), (uint8_t)arg
 #define SetWORDval(arg) (uint8_t)(((uint16_t)arg) >> 8), (uint8_t)arg
 
-/*
- * Constructor opens port at desired baudrate
- */
+  /*
+   * Constructor opens port at desired baudrate
+   */
 Roboclaw::Roboclaw(std::string &port, uint32_t baudrate)
 {
     /* initialize pointer to a new Serial port object */
@@ -79,7 +79,7 @@ void Roboclaw::crc_clear()
 
 /*
  * updates the crc calculation with based on the specified byte
- * see the Roboclaw sheet and user manual for more on this 
+ * see the Roboclaw sheet and user manual for more on this
  */
 void Roboclaw::crc_update(uint8_t data)
 {
@@ -458,14 +458,14 @@ uint32_t Roboclaw::read4_1(uint8_t address, uint8_t cmd, uint8_t *status, bool *
  * original methods unchanged from original Arduino library *
  ************************************************************/
 
-/**
- * Drive motor 1 forward. Valid data range is 0 - 127. A value of 127 = full speed forward, 64 =
- * about half speed forward and 0 = full stop.
- *
- * @param address Controller address value from 0x80 to 0x87.
- * @param speed 0 - 127 speed where 127 full speed, 0 is stopped.
- * @return true if success.
- */
+ /**
+  * Drive motor 1 forward. Valid data range is 0 - 127. A value of 127 = full speed forward, 64 =
+  * about half speed forward and 0 = full stop.
+  *
+  * @param address Controller address value from 0x80 to 0x87.
+  * @param speed 0 - 127 speed where 127 full speed, 0 is stopped.
+  * @return true if success.
+  */
 bool Roboclaw::ForwardM1(uint8_t address, uint8_t speed)
 {
     return write_n(3, address, M1FORWARD, speed);
@@ -501,12 +501,12 @@ bool Roboclaw::SetMinVoltageMainBattery(uint8_t address, uint8_t voltage)
 }
 
 /**
- * attention: SetMainVoltages is the preferred method to be used. Sets main battery (B- / B+) maximum voltage level. 
- * The valid data range is 30 - 175 (6V - 34V). During regenerative breaking a back voltage is 
- * applied to charge the battery. When using a power supply, by setting the maximum voltage level, 
- * RoboClaw will, before exceeding it, go into hard braking mode until the voltage drops below the 
- * maximum value set. This will prevent overvoltage conditions when using power supplies. 
- * The formula for calculating the voltage is: Desired Volts x 5.12 = Value. 
+ * attention: SetMainVoltages is the preferred method to be used. Sets main battery (B- / B+) maximum voltage level.
+ * The valid data range is 30 - 175 (6V - 34V). During regenerative breaking a back voltage is
+ * applied to charge the battery. When using a power supply, by setting the maximum voltage level,
+ * RoboClaw will, before exceeding it, go into hard braking mode until the voltage drops below the
+ * maximum value set. This will prevent overvoltage conditions when using power supplies.
+ * The formula for calculating the voltage is: Desired Volts x 5.12 = Value.
  * Examples of valid values are 12V = 62, 16V = 82 and 24V = 123.
  *
  * @param address Controller address value from 0x80 to 0x87.
@@ -657,7 +657,7 @@ bool Roboclaw::LeftRightMixed(uint8_t address, uint8_t speed)
  * @param status The Status byte tracks counter underflow, direction and overflow. The byte value represents:
  * Bit0 - Counter Underflow (1= Underflow Occurred, Cleared After Reading)
  * Bit1 - Direction (0 = Forward, 1 = Backwards)
- * Bit2 - Counter Overflow (1= Underflow Occurred, Cleared After Reading) 
+ * Bit2 - Counter Overflow (1= Underflow Occurred, Cleared After Reading)
  * @param valid true if success
  * @return value of encoder.
  */
@@ -675,7 +675,7 @@ uint32_t Roboclaw::ReadEncM1(uint8_t address, uint8_t *status, bool *valid)
  * @param status The Status byte tracks counter underflow, direction and overflow. The byte value represents:
  * Bit0 - Counter Underflow (1= Underflow Occurred, Cleared After Reading)
  * Bit1 - Direction (0 = Forward, 1 = Backwards)
- * Bit2 - Counter Overflow (1= Underflow Occurred, Cleared After Reading) 
+ * Bit2 - Counter Overflow (1= Underflow Occurred, Cleared After Reading)
  * @param valid true if success
  * @return value of encoder.
  */
@@ -686,7 +686,7 @@ uint32_t Roboclaw::ReadEncM2(uint8_t address, uint8_t *status, bool *valid)
 
 /**
  * Read M1 counter speed. Returned value is in pulses per second. RoboClaw keeps track of how
- * many pulses received per second for both encoder channels. 
+ * many pulses received per second for both encoder channels.
  *
  * @param address Controller address value from 0x80 to 0x87
  * @param status Status indicates the direction (0 – forward, 1 - backward).
@@ -701,7 +701,7 @@ uint32_t Roboclaw::ReadSpeedM1(uint8_t address, uint8_t *status, bool *valid)
 /**
  * Read M2 counter speed. Returned value is in pulses per second. RoboClaw keeps track of how
  * many pulses received per second for both encoder channels. 
- *
+*
  * @param address Controller address value from 0x80 to 0x87
  * @param status Status indicates the direction (0 – forward, 1 - backward).
  * @param valid true if success
@@ -1183,21 +1183,94 @@ bool Roboclaw::SpeedDistanceM1M2(uint8_t address, uint32_t speed1, uint32_t dist
     return write_n(19, address, MIXEDSPEEDDIST, SetDWORDval(speed1), SetDWORDval(distance1), SetDWORDval(speed2), SetDWORDval(distance2), flag);
 }
 
+/**
+ * Drive M1 with a speed, acceleration and distance value. The sign indicates which direction the
+ * motor will run. The acceleration and distance values are not signed. This command is used to
+ * control the motors top speed, total distanced traveled and at what incremental acceleration value
+ * to use until the top speed is reached. Each motor channel M1 and M2 have separate buffers. This
+ * command will execute immediately if no other command for that channel is executing, otherwise
+ * the command will be buffered in the order it was sent. Any buffered or executing command can
+ * be stopped when a new command is issued by setting the Buffer argument. All values used are
+ * in quad pulses per second.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param accel acceleration of motor M1
+ * @param speed speed of motor M1
+ * @param distance distance for motor M1
+ * @param flag  set to a 1 or 0. If a value of 0 is used the command will be buffered
+ * and executed in the order sent. If a value of 1 is used the current running command is stopped,
+ * any other commands in the buffer are deleted and the new command is executed
+ * @return true if success.
+ */
 bool Roboclaw::SpeedAccelDistanceM1(uint8_t address, uint32_t accel, uint32_t speed, uint32_t distance, uint8_t flag)
 {
     return write_n(15, address, M1SPEEDACCELDIST, SetDWORDval(accel), SetDWORDval(speed), SetDWORDval(distance), flag);
 }
 
+/**
+ * Drive M2 with a speed, acceleration and distance value. The sign indicates which direction the
+ * motor will run. The acceleration and distance values are not signed. This command is used to
+ * control the motors top speed, total distanced traveled and at what incremental acceleration value
+ * to use until the top speed is reached. Each motor channel M1 and M2 have separate buffers. This
+ * command will execute immediately if no other command for that channel is executing, otherwise
+ * the command will be buffered in the order it was sent. Any buffered or executing command can
+ * be stopped when a new command is issued by setting the Buffer argument. All values used are
+ * in quad pulses per second.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param accel acceleration of motor M2
+ * @param speed speed of motor M2
+ * @param distance distance for motor M2
+ * @param flag  set to a 1 or 0. If a value of 0 is used the command will be buffered
+ * and executed in the order sent. If a value of 1 is used the current running command is stopped,
+ * any other commands in the buffer are deleted and the new command is executed
+ * @return true if success.
+ */
 bool Roboclaw::SpeedAccelDistanceM2(uint8_t address, uint32_t accel, uint32_t speed, uint32_t distance, uint8_t flag)
 {
     return write_n(15, address, M2SPEEDACCELDIST, SetDWORDval(accel), SetDWORDval(speed), SetDWORDval(distance), flag);
 }
 
+/**
+ * Drive M1 and M2 with a speed, acceleration and distance value. The sign indicates which
+ * direction the motor will run. The acceleration and distance values are not signed. This command
+ * is used to control both motors top speed, total distanced traveled and at what incremental
+ * acceleration value to use until the top speed is reached. Each motor channel M1 and M2 have
+ * separate buffers. This command will execute immediately if no other command for that channel
+ * is executing, otherwise the command will be buffered in the order it was sent. Any buffered
+ * or executing command can be stopped when a new command is issued by setting the Buffer
+ * argument. All values used are in quad pulses per second.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param accel acceleration of motors
+ * @param speed1 speed of motor 1
+ * @param distance1 distance for motor 1
+ * @param speed2 speed of motor 2
+ * @param distance2 distance for motor 2
+ * @param flag  set to a 1 or 0. If a value of 0 is used the command will be buffered
+ * and executed in the order sent. If a value of 1 is used the current running command is stopped,
+ * any other commands in the buffer are deleted and the new command is executed
+ * @return true if success.
+ */
 bool Roboclaw::SpeedAccelDistanceM1M2(uint8_t address, uint32_t accel, uint32_t speed1, uint32_t distance1, uint32_t speed2, uint32_t distance2, uint8_t flag)
 {
     return write_n(23, address, MIXEDSPEEDACCELDIST, SetDWORDval(accel), SetDWORDval(speed1), SetDWORDval(distance1), SetDWORDval(speed2), SetDWORDval(distance2), flag);
 }
 
+/**
+ * Read both motor M1 and M2 buffer lengths. This command can be used to determine how many
+ * commands are waiting to execute.
+ * The return values represent how many commands per buffer are waiting to be executed. The
+ * maximum buffer size per motor is 64 commands(0x3F). A return value of 0x80(128) indicates
+ * the buffer is empty. A return value of 0 indiciates the last command sent is executing. A value of
+ * 0x80 indicates the last command buffered has finished.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param depth1 depth of buffer 1
+ * @param depth2 depth of buffer 2
+ * 
+ * @reurn represent how many commands per buffer are waiting to be executed.
+ */
 bool Roboclaw::ReadBuffers(uint8_t address, uint8_t &depth1, uint8_t &depth2)
 {
     bool valid;
@@ -1210,6 +1283,16 @@ bool Roboclaw::ReadBuffers(uint8_t address, uint8_t &depth1, uint8_t &depth2)
     return valid;
 }
 
+/**
+ * Read the current PWM output values for the motor channels. The values returned are +/-32767.
+ * The duty cycle percent is calculated by dividing the Value by 327.67.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param pwm1 pwm 1
+ * @param pwm2 pwm 2
+ * 
+ * @reurn pwm values +/-32767
+ */
 bool Roboclaw::ReadPWMs(uint8_t address, int16_t &pwm1, int16_t &pwm2)
 {
     bool valid;
@@ -1222,6 +1305,16 @@ bool Roboclaw::ReadPWMs(uint8_t address, int16_t &pwm1, int16_t &pwm2)
     return valid;
 }
 
+/**
+ * Read the current draw from each motor in 10ma increments. The amps value is calculated by
+ * dividing the value by 100. 
+ *
+ * param address Controller address value from 0x80 to 0x87
+ * @param current1 current 1
+ * @param current2 current 2
+ * 
+ * @reurn pwm values +/-32767
+ */
 bool Roboclaw::ReadCurrents(uint8_t address, int16_t &current1, int16_t &current2)
 {
     bool valid;
@@ -1234,31 +1327,118 @@ bool Roboclaw::ReadCurrents(uint8_t address, int16_t &current1, int16_t &current
     return valid;
 }
 
+/**
+ * Drive M1 and M2 in the same command using one value for acceleration and two signed speed
+ * values for each motor. The sign indicates which direction the motor will run. The acceleration
+ * value is not signed. The motors are sync during acceleration. This command is used to drive
+ * the motor by quad pulses per second and using an acceleration value for ramping. Different
+ * quadrature encoders will have different rates at which they generate the incoming pulses. The
+ * values used will differ from one encoder to another. Once a value is sent the motor will begin to
+ * accelerate incrementally until the rate defined is reached.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param accel1 acceleration of motor 1
+ * @param speed1 speed of motor 1
+ * @param accel2 acceleration of motor 2
+ * @param speed2 speed of motor 2
+ * @param flag  set to a 1 or 0. If a value of 0 is used the command will be buffered
+ * and executed in the order sent. If a value of 1 is used the current running command is stopped,
+ * any other commands in the buffer are deleted and the new command is executed
+ * @return true if success.
+ */
 bool Roboclaw::SpeedAccelM1M2_2(uint8_t address, uint32_t accel1, uint32_t speed1, uint32_t accel2, uint32_t speed2)
 {
     return write_n(18, address, MIXEDSPEED2ACCEL, SetDWORDval(accel1), SetDWORDval(speed1), SetDWORDval(accel2), SetDWORDval(speed2));
 }
 
+/**
+ * Drive M1 and M2 in the same command using one value for acceleration and two signed speed
+ * values for each motor. The sign indicates which direction the motor will run. The acceleration
+ * value is not signed. The motors are sync during acceleration. This command is used to drive
+ * the motor by quad pulses per second and using an acceleration value for ramping. Different
+ * quadrature encoders will have different rates at which they generate the incoming pulses. The
+ * values used will differ from one encoder to another. Once a value is sent the motor will begin to
+ * accelerate incrementally until the rate defined is reached.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param accel1 acceleration of motor 1
+ * @param speed1 speed of motor 1
+ * @param distance1 distance for motor 1
+ * @param accel2 acceleration of motor 2
+ * @param speed2 speed of motor 2
+ * @param distance2 distance for motor 2
+ * @param flag  set to a 1 or 0. If a value of 0 is used the command will be buffered
+ * and executed in the order sent. If a value of 1 is used the current running command is stopped,
+ * any other commands in the buffer are deleted and the new command is executed
+ * @return true if success.
+ */
 bool Roboclaw::SpeedAccelDistanceM1M2_2(uint8_t address, uint32_t accel1, uint32_t speed1, uint32_t distance1, uint32_t accel2, uint32_t speed2, uint32_t distance2, uint8_t flag)
 {
     return write_n(27, address, MIXEDSPEED2ACCELDIST, SetDWORDval(accel1), SetDWORDval(speed1), SetDWORDval(distance1), SetDWORDval(accel2), SetDWORDval(speed2), SetDWORDval(distance2), flag);
 }
 
+
+/**
+ * Drive M1 with a signed duty and acceleration value. The sign indicates which direction the motor
+ * will run. The acceleration values are not signed. This command is used to drive the motor by
+ * PWM and using an acceleration value for ramping. Accel is the rate per second at which the duty
+ * changes from the current duty to the specified duty.
+ * The duty value is signed and the range is -32768 to +32767(eg. +-100% duty). The accel value
+ * range is 0 to 655359(eg maximum acceleration rate is -100% to 100% in 100ms).
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param duty duty value is signed and the range is -32768 to +32767(eg. +-100% duty)
+ * @param accel  The accel value range is 0 to 655359 g maximum acceleration rate is -100% to 100% in 100ms
+ * @return true if success.
+ */
 bool Roboclaw::DutyAccelM1(uint8_t address, uint16_t duty, uint32_t accel)
 {
     return write_n(8, address, M1DUTYACCEL, SetWORDval(duty), SetDWORDval(accel));
 }
 
+/**
+ * Drive M1 with a signed duty and acceleration value. The sign indicates which direction the motor
+ * will run. The acceleration values are not signed. This command is used to drive the motor by
+ * PWM and using an acceleration value for ramping. Accel is the rate per second at which the duty
+ * changes from the current duty to the specified duty.
+ * The duty value is signed and the range is -32768 to +32767(eg. +-100% duty). The accel value
+ * range is 0 to 655359(eg maximum acceleration rate is -100% to 100% in 100ms).
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param duty duty value is signed and the range is -32768 to +32767(eg. +-100% duty)
+ * @param accel  The accel value range is 0 to 655359 g maximum acceleration rate is -100% to 100% in 100ms
+ * @return true if success.
+ */
 bool Roboclaw::DutyAccelM2(uint8_t address, uint16_t duty, uint32_t accel)
 {
     return write_n(8, address, M2DUTYACCEL, SetWORDval(duty), SetDWORDval(accel));
 }
 
+/**
+ * Drive M1 and M2 in the same command using acceleration and duty values for each motor.
+ * The sign indicates which direction the motor will run. The acceleration value is not signed. This
+ * command is used to drive the motor by PWM using an acceleration value for ramping
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param duty duty value is signed and the range is -32768 to +32767(eg. +-100% duty)
+ * @param accel  The accel value range is 0 to 655359 g maximum acceleration rate is -100% to 100% in 100ms
+ * @return true if success.
+ */
 bool Roboclaw::DutyAccelM1M2(uint8_t address, uint16_t duty1, uint32_t accel1, uint16_t duty2, uint32_t accel2)
 {
     return write_n(14, address, MIXEDDUTYACCEL, SetWORDval(duty1), SetDWORDval(accel1), SetWORDval(duty2), SetDWORDval(accel2));
 }
 
+/**
+ * Read M1 PID and QPPS Settings.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param Kp_fp p value
+ * @param Ki_fp i value
+ * @param Kd_fp d value
+ * @param qpps QPPS
+ * @return true if success.
+ */
 bool Roboclaw::ReadM1VelocityPID(uint8_t address, float &Kp_fp, float &Ki_fp, float &Kd_fp, uint32_t &qpps)
 {
     uint32_t Kp, Ki, Kd;
@@ -1269,6 +1449,16 @@ bool Roboclaw::ReadM1VelocityPID(uint8_t address, float &Kp_fp, float &Ki_fp, fl
     return valid;
 }
 
+/**
+ * Read M2 PID and QPPS Settings.
+ *
+ * @param address Controller address value from 0x80 to 0x87
+ * @param Kp_fp p value
+ * @param Ki_fp i value
+ * @param Kd_fp d value
+ * @param qpps QPPS
+ * @return true if success.
+ */
 bool Roboclaw::ReadM2VelocityPID(uint8_t address, float &Kp_fp, float &Ki_fp, float &Kd_fp, uint32_t &qpps)
 {
     uint32_t Kp, Ki, Kd;
@@ -1279,16 +1469,39 @@ bool Roboclaw::ReadM2VelocityPID(uint8_t address, float &Kp_fp, float &Ki_fp, fl
     return valid;
 }
 
+/**
+ * Set the Main Battery Voltage cutoffs, Min and Max. Min and Max voltages are in 10th of a volt
+ * increments. Multiply the voltage to set by 10.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param min min voltage cutoff
+ * @param max max voltage cutoff
+ * @return true if success.
+ */
 bool Roboclaw::SetMainVoltages(uint8_t address, uint16_t min, uint16_t max)
 {
     return write_n(6, address, SETMAINVOLTAGES, SetWORDval(min), SetWORDval(max));
 }
 
+/**
+ * Set the Logic Battery Voltage cutoffs, Min and Max. Min and Max voltages are in 10th of a volt
+ * increments. Multiply the voltage to set by 10.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param min min voltage cutoff
+ * @param max max voltage cutoff
+ * @return true if success.
+ */
 bool Roboclaw::SetLogicVoltages(uint8_t address, uint16_t min, uint16_t max)
 {
     return write_n(6, address, SETLOGICVOLTAGES, SetWORDval(min), SetWORDval(max));
 }
 
+/**
+ * Read the Main Battery Voltage Settings. The voltage is calculated by dividing the value by 10 
+ * @paam address Controller address value from 0x80 to 0x87
+ * @param min min voltage cutoff
+ * @param max max voltage cutoff
+ * @return true if success.
+ */
 bool Roboclaw::ReadMinMaxMainVoltages(uint8_t address, uint16_t &min, uint16_t &max)
 {
     bool valid;
@@ -1301,6 +1514,13 @@ bool Roboclaw::ReadMinMaxMainVoltages(uint8_t address, uint16_t &min, uint16_t &
     return valid;
 }
 
+/**
+ * Read the Logic Battery Voltage Settings. The voltage is calculated by dividing the value by 10 
+ * @paam address Controller address value from 0x80 to 0x87
+ * @param min min voltage cutoff
+ * @param max max voltage cutoff
+ * @return true if success.
+ */
 bool Roboclaw::ReadMinMaxLogicVoltages(uint8_t address, uint16_t &min, uint16_t &max)
 {
     bool valid;
@@ -1313,6 +1533,22 @@ bool Roboclaw::ReadMinMaxLogicVoltages(uint8_t address, uint16_t &min, uint16_t 
     return valid;
 }
 
+/**
+ * Set M1 position PID constants. The RoboClaw Position PID system consist of seven constants starting with P = Proportional, I=
+ * Integral and D= Derivative, MaxI = Maximum Integral windup, Deadzone in encoder counts,
+ * MinPos = Minimum Position and MaxPos = Maximum Position. The defaults values are all zero. 
+ * Postion constants are used only with the Position commands, 65,66 and 67 or when encoders
+ * are enabled in RC/Analog modes.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param kp_fp min voltage cutoff
+ * @param ki_fp max voltage cutoff
+ * @param kd_fp max voltage cutoff
+ * @param kiMax min voltage cutoff
+ * @param deadzone max voltage cutoff
+ * @param min max voltage cutoff
+ * @param max max voltage cutoff
+ * @return true if success.
+ */
 bool Roboclaw::SetM1PositionPID(uint8_t address, float kp_fp, float ki_fp, float kd_fp, uint32_t kiMax, uint32_t deadzone, uint32_t min, uint32_t max)
 {
     uint32_t kp = kp_fp * 1024;
@@ -1321,6 +1557,22 @@ bool Roboclaw::SetM1PositionPID(uint8_t address, float kp_fp, float ki_fp, float
     return write_n(30, address, SETM1POSPID, SetDWORDval(kd), SetDWORDval(kp), SetDWORDval(ki), SetDWORDval(kiMax), SetDWORDval(deadzone), SetDWORDval(min), SetDWORDval(max));
 }
 
+/**
+ * Set M2 position PID constants. The RoboClaw Position PID system consist of seven constants starting with P = Proportional, I=
+ * Integral and D= Derivative, MaxI = Maximum Integral windup, Deadzone in encoder counts,
+ * MinPos = Minimum Position and MaxPos = Maximum Position. The defaults values are all zero.
+ * Position constants are used only with the Position commands, 65,66 and 67 or when encoders
+ * are enabled in RC/Analog modes.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param kp_fp p value
+ * @param ki_fp i value
+ * @param kd_fp d value
+ * @param kiMax maximum integral windup
+ * @param deadzone deadzone in encoder counts
+ * @param min minimum position
+ * @param max maximum position
+ * @return true if success.
+ */
 bool Roboclaw::SetM2PositionPID(uint8_t address, float kp_fp, float ki_fp, float kd_fp, uint32_t kiMax, uint32_t deadzone, uint32_t min, uint32_t max)
 {
     uint32_t kp = kp_fp * 1024;
@@ -1329,6 +1581,18 @@ bool Roboclaw::SetM2PositionPID(uint8_t address, float kp_fp, float ki_fp, float
     return write_n(30, address, SETM2POSPID, SetDWORDval(kd), SetDWORDval(kp), SetDWORDval(ki), SetDWORDval(kiMax), SetDWORDval(deadzone), SetDWORDval(min), SetDWORDval(max));
 }
 
+/**
+ * Read M1 Position PID Constants - Read the Position PID Settings.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param Kp_fp p value
+ * @param Ki_fp i value
+ * @param Kd_fp d value
+ * @param KiMax maximum integral windup
+ * @param DeadZone deadzone in encoder counts
+ * @param Min minimum position
+ * @param Max maximum position
+ * @return true if success.
+ */
 bool Roboclaw::ReadM1PositionPID(uint8_t address, float &Kp_fp, float &Ki_fp, float &Kd_fp, uint32_t &KiMax, uint32_t &DeadZone, uint32_t &Min, uint32_t &Max)
 {
     uint32_t Kp, Ki, Kd;
@@ -1339,6 +1603,18 @@ bool Roboclaw::ReadM1PositionPID(uint8_t address, float &Kp_fp, float &Ki_fp, fl
     return valid;
 }
 
+/**
+ * Read M2 Position PID Constants - Read the Position PID Settings.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param Kp_fp p value
+ * @param Ki_fp i value
+ * @param Kd_fp d value
+ * @param KiMax maximum integral windup
+ * @param DeadZone deadzone in encoder counts
+ * @param Min minimum position
+ * @param Max maximum position
+ * @return true if success.
+ */
 bool Roboclaw::ReadM2PositionPID(uint8_t address, float &Kp_fp, float &Ki_fp, float &Kd_fp, uint32_t &KiMax, uint32_t &DeadZone, uint32_t &Min, uint32_t &Max)
 {
     uint32_t Kp, Ki, Kd;
@@ -1349,36 +1625,106 @@ bool Roboclaw::ReadM2PositionPID(uint8_t address, float &Kp_fp, float &Ki_fp, fl
     return valid;
 }
 
+/**
+ * Move M1 position from the current position to the specified new position and hold the new
+ * position. Accel sets the acceleration value and deccel the decceleration value. QSpeed sets the
+ * speed in quadrature pulses the motor will run at after acceleration and before decceleration.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param accel acceleration value
+ * @param speed speed value
+ * @param deccel decceleration value
+ * @param position position value
+ * @return true if success.
+ */
 bool Roboclaw::SpeedAccelDeccelPositionM1(uint8_t address, uint32_t accel, uint32_t speed, uint32_t deccel, uint32_t position, uint8_t flag)
 {
     return write_n(19, address, M1SPEEDACCELDECCELPOS, SetDWORDval(accel), SetDWORDval(speed), SetDWORDval(deccel), SetDWORDval(position), flag);
 }
 
+/**
+ * Move M2 position from the current position to the specified new position and hold the new
+ * position. Accel sets the acceleration value and deccel the decceleration value. QSpeed sets the
+ * speed in quadrature pulses the motor will run at after acceleration and before decceleration.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param accel acceleration value
+ * @param speed speed value
+ * @param deccel decceleration value
+ * @param position position value
+ * @return true if success.
+ */
 bool Roboclaw::SpeedAccelDeccelPositionM2(uint8_t address, uint32_t accel, uint32_t speed, uint32_t deccel, uint32_t position, uint8_t flag)
 {
     return write_n(19, address, M2SPEEDACCELDECCELPOS, SetDWORDval(accel), SetDWORDval(speed), SetDWORDval(deccel), SetDWORDval(position), flag);
 }
 
+/**
+ * Move M1 & M2 positions from their current positions to the specified new positions and hold the
+ * new positions. Accel sets the acceleration value and deccel the decceleration value. QSpeed sets
+ * the speed in quadrature pulses the motor will run at after acceleration and before decceleration. 
+ * @paam address Controller address value from 0x80 to 0x87
+ * @param accel1 acceleration value
+ * @param speed1 speed value
+ * @param deccel1 decceleration value
+ * @param position1 position value
+ * @param accel2 acceleration value
+ * @param speed2 speed value
+ * @param deccel2 decceleration value
+ * @param position2 position value
+ * @param position2 position value
+ * @return true if success.
+ */
 bool Roboclaw::SpeedAccelDeccelPositionM1M2(uint8_t address, uint32_t accel1, uint32_t speed1, uint32_t deccel1, uint32_t position1, uint32_t accel2, uint32_t speed2, uint32_t deccel2, uint32_t position2, uint8_t flag)
 {
     return write_n(35, address, MIXEDSPEEDACCELDECCELPOS, SetDWORDval(accel1), SetDWORDval(speed1), SetDWORDval(deccel1), SetDWORDval(position1), SetDWORDval(accel2), SetDWORDval(speed2), SetDWORDval(deccel2), SetDWORDval(position2), flag);
 }
 
+/** 
+ * SetM1 Default Duty Acceleration
+ * Set the default acceleration for M1 when using duty cycle commands(Cmds 32,33 and 34) or
+ * when using Standard Serial, RC and Analog PWM modes.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param accel acceleration value
+ * @return true if success.
+ */
 bool Roboclaw::SetM1DefaultAccel(uint8_t address, uint32_t accel)
 {
     return write_n(6, address, SETM1DEFAULTACCEL, SetDWORDval(accel));
 }
 
+/** 
+ * SetM2 Default Duty Acceleration
+ * Set the default acceleration for M2 when using duty cycle commands(Cmds 32,33 and 34) or
+ * when using Standard Serial, RC and Analog PWM modes.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param accel acceleration value
+ * @return true if success.
+ */
 bool Roboclaw::SetM2DefaultAccel(uint8_t address, uint32_t accel)
 {
     return write_n(6, address, SETM2DEFAULTACCEL, SetDWORDval(accel));
 }
 
+/** 
+ * Setmodes for S3,S4 and S5. 
+ * @paam address Controller address value from 0x80 to 0x87
+ * @param S3mode S3mode pin
+ * @param S4mode S4mode pin
+ * @param S5mode S5mode pin
+ * @return true if success.
+ */
 bool Roboclaw::SetPinFunctions(uint8_t address, uint8_t S3mode, uint8_t S4mode, uint8_t S5mode)
 {
     return write_n(5, address, SETPINFUNCTIONS, S3mode, S4mode, S5mode);
 }
 
+/** 
+ * Rea mode settings for S3,S4 and S5. See command 74 for mode descriptions
+ * @param address Controller address value from 0x80 to 0x87
+ * @param S3mode S3mode pin
+ * @param S4mode S4mode pin
+ * @param S5mode S5mode pin
+ * @return true if success.
+ */
 bool Roboclaw::GetPinFunctions(uint8_t address, uint8_t &S3mode, uint8_t &S4mode, uint8_t &S5mode)
 {
     uint8_t val1, val2, val3;
@@ -1438,11 +1784,27 @@ bool Roboclaw::GetPinFunctions(uint8_t address, uint8_t &S3mode, uint8_t &S4mode
     return false;
 }
 
+/** 
+ * SetRC/Analog mode control deadband percentage in 10ths of a percent. Default value is
+ * 25(2.5%). Minimum value is 0(no DeadBand), Maximum value is 250(25%).
+ * @param address Controller address value from 0x80 to 0x87
+ * @param Min S3mode pin
+ * @param Max S4mode pin
+ * @return true if success.
+ */
 bool Roboclaw::SetDeadBand(uint8_t address, uint8_t Min, uint8_t Max)
 {
     return write_n(4, address, SETDEADBAND, Min, Max);
 }
 
+/** 
+ * Rea DeadBand for RC/Analog controls
+ * Read DeadBand settings in 10ths of a percent.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param Min S3mode pin
+ * @param Max S4mode pin
+ * @return true if success.
+ */
 bool Roboclaw::GetDeadBand(uint8_t address, uint8_t &Min, uint8_t &Max)
 {
     bool valid;
@@ -1455,23 +1817,52 @@ bool Roboclaw::GetDeadBand(uint8_t address, uint8_t &Min, uint8_t &Max)
     return valid;
 }
 
+/** 
+ * Rea M1 and M2 encoder counters. Quadrature encoders have a range of 0 to 4,294,967,295.
+ * Absolute encoder values are converted from an analog voltage into a value from 0 to 2047 for
+ * the full 2V analog range.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param Min S3mode pin
+ * @param Max S4mode pin
+ * @return true if success.
+ */
 bool Roboclaw::ReadEncoders(uint8_t address, uint32_t &enc1, uint32_t &enc2)
 {
     bool valid = read_n(2, address, GETENCODERS, &enc1, &enc2);
     return valid;
 }
 
+/** 
+ * Rea ISpeeds Counters
+ * Read M1 and M2 instantaneous speeds. Returns the speed in encoder counts per second for the
+ * last 300th of a second for both encoder channels.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param ispeed1 M1 instantaneous speed 
+ * @paam ispeed2 M2 instantaneous speed 
+ * @reurn true if success.
+ */
 bool Roboclaw::ReadISpeeds(uint8_t address, uint32_t &ispeed1, uint32_t &ispeed2)
 {
     bool valid = read_n(2, address, GETISPEEDS, &ispeed1, &ispeed2);
     return valid;
 }
 
+/** 
+ * Rest Settings to factory defaults.
+ * @param address Controller address value from 0x80 to 0x87
+ * @return true if success.
+ */
 bool Roboclaw::RestoreDefaults(uint8_t address)
 {
     return write_n(2, address, RESTOREDEFAULTS);
 }
 
+/** 
+ * Rea the board temperature. Value returned is in 10ths of degrees.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param temp board temperature
+ * @return true if success.
+ */
 bool Roboclaw::ReadTemp(uint8_t address, uint16_t &temp)
 {
     bool valid;
@@ -1479,6 +1870,13 @@ bool Roboclaw::ReadTemp(uint8_t address, uint16_t &temp)
     return valid;
 }
 
+/** 
+ * Rea the second board temperature(only on supported units). Value returned is in 10ths of
+ * degrees.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param temp board temperature
+ * @return true if success.
+ */
 bool Roboclaw::ReadTemp2(uint8_t address, uint16_t &temp)
 {
     bool valid;
@@ -1486,11 +1884,30 @@ bool Roboclaw::ReadTemp2(uint8_t address, uint16_t &temp)
     return valid;
 }
 
+/** 
+ * Rea the current unit status.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param valid status
+ * @return true if success.
+ */
 uint16_t Roboclaw::ReadError(uint8_t address, bool *valid)
 {
     return read2(address, GETERROR, valid);
 }
 
+/** 
+ * Rea the encoder mode for both motors.
+ * Encoder Mode bits
+ * Bit 7 Enable/Disable RC/Analog Encoder support
+ * Bit 6 Reverse Encoder Relative Direction
+ * Bit 5 Reverse Motor Relative Direction
+ * Bit 4-1 N/A
+ * Bit 0 Quadrature(0)/Absolute(1)
+ * @param address Controller address value from 0x80 to 0x87
+ * @param M1mode M1 mode
+ * @param M2mode M2 mode
+ * @return true if success.
+ */
 bool Roboclaw::ReadEncoderModes(uint8_t address, uint8_t &M1mode, uint8_t &M2mode)
 {
     bool valid;
@@ -1503,31 +1920,77 @@ bool Roboclaw::ReadEncoderModes(uint8_t address, uint8_t &M1mode, uint8_t &M2mod
     return valid;
 }
 
+/** 
+ * Setthe Encoder Mode for motor 1.
+ * Encoder Mode bits
+ * Bit 7 Enable/Disable RC/Analog Encoder support
+ * Bit 6 Reverse Encoder Relative Direction
+ * Bit 5 Reverse Motor Relative Direction
+ * Bit 4-1 N/A
+ * Bit 0 Quadrature(0)/Absolute(1)
+ * @param address Controller address value from 0x80 to 0x87
+ * @param mode M1 mode
+ * @return true if success.
+ */
 bool Roboclaw::SetM1EncoderMode(uint8_t address, uint8_t mode)
 {
     return write_n(3, address, SETM1ENCODERMODE, mode);
 }
 
+/** 
+ * Setthe Encoder Mode for motor 2.
+ * Encoder Mode bits
+ * Bit 7 Enable/Disable RC/Analog Encoder support
+ * Bit 6 Reverse Encoder Relative Direction
+ * Bit 5 Reverse Motor Relative Direction
+ * Bit 4-1 N/A
+ * Bit 0 Quadrature(0)/Absolute(1)
+ * @param address Controller address value from 0x80 to 0x87
+ * @param mode M2 mode
+ * @return true if success.
+ */
 bool Roboclaw::SetM2EncoderMode(uint8_t address, uint8_t mode)
 {
     return write_n(3, address, SETM2ENCODERMODE, mode);
 }
 
+/** 
+ * Wries all settings to non-volatile memory. Values will be loaded after each power up.
+ * @param address Controller address value from 0x80 to 0x87
+ * @return true if success.
+ */
 bool Roboclaw::WriteNVM(uint8_t address)
 {
     return write_n(6, address, WRITENVM, SetDWORDval(0xE22EAB7A));
 }
 
+/** 
+ * Rea all settings from non-volatile memory.
+ * @param address Controller address value from 0x80 to 0x87
+ * @return true if success.
+ */
 bool Roboclaw::ReadNVM(uint8_t address)
 {
     return write_n(2, address, READNVM);
 }
 
+/** 
+ * Setconfig bits for standard settings
+ * @param address Controller address value from 0x80 to 0x87
+ * @param config configuration bit (see http://downloads.basicmicro.com/docs/roboclaw_user_manual.pdf page 74 for available settings)
+ * @return true if success.
+ */
 bool Roboclaw::SetConfig(uint8_t address, uint16_t config)
 {
     return write_n(4, address, SETCONFIG, SetWORDval(config));
 }
 
+/** 
+ * Rea config bits for standard settings 
+ * @paam address Controller address value from 0x80 to 0x87
+ * @param valid valid bit (see http://downloads.basicmicro.com/docs/roboclaw_user_manual.pdf page 74 for available settings)
+ * @return true if success.
+ */
 bool Roboclaw::GetConfig(uint8_t address, uint16_t &config)
 {
     bool valid;
@@ -1539,16 +2002,37 @@ bool Roboclaw::GetConfig(uint8_t address, uint16_t &config)
     return valid;
 }
 
+/** 
+ * SetM1 Maximum Current Limit. Current value is in 10ma units. To calculate multiply current
+ * limit by 100.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param max max current limit
+ * @return true if success.
+ */
 bool Roboclaw::SetM1MaxCurrent(uint8_t address, uint32_t max)
 {
     return write_n(10, address, SETM1MAXCURRENT, SetDWORDval(max), SetDWORDval(0));
 }
 
+/** 
+ * SetM2 Maximum Current Limit. Current value is in 10ma units. To calculate multiply current
+ * limit by 100.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param max max current limit
+ * @return true if success.
+ */
 bool Roboclaw::SetM2MaxCurrent(uint8_t address, uint32_t max)
 {
     return write_n(10, address, SETM2MAXCURRENT, SetDWORDval(max), SetDWORDval(0));
 }
 
+/** 
+ * Rea M1 Maximum Current Limit. Current value is in 10ma units. To calculate divide value
+ * by 100. MinCurrent is always 0.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param max max current limit
+ * @return true if success.
+ */
 bool Roboclaw::ReadM1MaxCurrent(uint8_t address, uint32_t &max)
 {
     uint32_t tmax, dummy;
@@ -1558,6 +2042,13 @@ bool Roboclaw::ReadM1MaxCurrent(uint8_t address, uint32_t &max)
     return valid;
 }
 
+/** 
+ * Rea M2 Maximum Current Limit. Current value is in 10ma units. To calculate divide value
+ * by 100. MinCurrent is always 0.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param max max current limit
+ * @return true if success.
+ */
 bool Roboclaw::ReadM2MaxCurrent(uint8_t address, uint32_t &max)
 {
     uint32_t tmax, dummy;
@@ -1567,11 +2058,23 @@ bool Roboclaw::ReadM2MaxCurrent(uint8_t address, uint32_t &max)
     return valid;
 }
 
+/** 
+ * SetPWM Drive mode. Locked Antiphase(0) or Sign Magnitude(1).
+ * @param address Controller address value from 0x80 to 0x87
+ * @param mode Locked Antiphase(0) or Sign Magnitude(1)
+ * @return true if success.
+ */
 bool Roboclaw::SetPWMMode(uint8_t address, uint8_t mode)
 {
     return write_n(3, address, SETPWMMODE, mode);
 }
 
+/** 
+ * Rea PWM Drive mode. Locked Antiphase(0) or Sign Magnitude(1).
+ * @param address Controller address value from 0x80 to 0x87
+ * @param mode Locked Antiphase(0) or Sign Magnitude(1)
+ * @return true if success.
+ */
 bool Roboclaw::GetPWMMode(uint8_t address, uint8_t &mode)
 {
     bool valid;
