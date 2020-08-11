@@ -1822,8 +1822,8 @@ bool Roboclaw::GetDeadBand(uint8_t address, uint8_t &Min, uint8_t &Max)
  * Absolute encoder values are converted from an analog voltage into a value from 0 to 2047 for
  * the full 2V analog range.
  * @param address Controller address value from 0x80 to 0x87
- * @param Min S3mode pin
- * @param Max S4mode pin
+ * @param enc1 encoder 1
+ * @param enc2 encoder 2
  * @return true if success.
  */
 bool Roboclaw::ReadEncoders(uint8_t address, uint32_t &enc1, uint32_t &enc2)
@@ -1838,7 +1838,7 @@ bool Roboclaw::ReadEncoders(uint8_t address, uint32_t &enc1, uint32_t &enc2)
  * last 300th of a second for both encoder channels.
  * @param address Controller address value from 0x80 to 0x87
  * @param ispeed1 M1 instantaneous speed 
- * @paam ispeed2 M2 instantaneous speed 
+ * @param ispeed2 M2 instantaneous speed 
  * @reurn true if success.
  */
 bool Roboclaw::ReadISpeeds(uint8_t address, uint32_t &ispeed1, uint32_t &ispeed2)
