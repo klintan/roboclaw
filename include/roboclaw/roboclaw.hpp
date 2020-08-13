@@ -101,6 +101,9 @@ class Roboclaw
 		bool SpeedAccelDeccelPositionM1(uint8_t address,uint32_t accel,uint32_t speed,uint32_t deccel,uint32_t position,uint8_t flag);
 		bool SpeedAccelDeccelPositionM2(uint8_t address,uint32_t accel,uint32_t speed,uint32_t deccel,uint32_t position,uint8_t flag);
 		bool SpeedAccelDeccelPositionM1M2(uint8_t address,uint32_t accel1,uint32_t speed1,uint32_t deccel1,uint32_t position1,uint32_t accel2,uint32_t speed2,uint32_t deccel2,uint32_t position2,uint8_t flag);
+		bool SpeedPositionM1(uint8_t address, uint32_t speed, uint32_t position, uint8_t flag);
+		bool SpeedPositionM2(uint8_t address, uint32_t speed, uint32_t position, uint8_t flag);
+		bool SpeedPositionM1M2(uint8_t address, uint32_t speed1, uint32_t position1, uint32_t speed2, uint32_t position2, uint8_t flag);
 		bool SetM1DefaultAccel(uint8_t address, uint32_t accel);
 		bool SetM2DefaultAccel(uint8_t address, uint32_t accel);
 		bool SetPinFunctions(uint8_t address, uint8_t S3mode, uint8_t S4mode, uint8_t S5mode);
@@ -301,6 +304,9 @@ class Roboclaw
 				READNVM = 95,	/* Reloads values from Flash into Ram */
 				SETCONFIG = 98,
 				GETCONFIG = 99,
+				M1SPEEDPOS = 122,
+				M2SPEEDPOS = 123,
+				MIXEDSPEEDPOS = 124,
 				SETM1MAXCURRENT = 133,
 				SETM2MAXCURRENT = 134,
 				GETM1MAXCURRENT = 135,

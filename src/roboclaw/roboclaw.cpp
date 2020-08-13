@@ -1678,6 +1678,47 @@ bool Roboclaw::SpeedAccelDeccelPositionM1M2(uint8_t address, uint32_t accel1, ui
     return write_n(35, address, MIXEDSPEEDACCELDECCELPOS, SetDWORDval(accel1), SetDWORDval(speed1), SetDWORDval(deccel1), SetDWORDval(position1), SetDWORDval(accel2), SetDWORDval(speed2), SetDWORDval(deccel2), SetDWORDval(position2), flag);
 }
 
+/**
+ * Move M1 from the current position to the specified new position and hold the new position.
+ * Default accel and decel are used.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed speed value
+ * @param position position value
+ * @return true if success.
+ */
+bool Roboclaw::SpeedPositionM1(uint8_t address, uint32_t speed, uint32_t position, uint8_t flag)
+{
+    return write_n(11, address, M1SPEEDPOS, SetDWORDval(speed), SetDWORDval(position), flag);
+}
+
+/**
+ * Move M2 from the current position to the specified new position and hold the new position.
+ * Default accel and decel are used.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed speed value
+ * @param position position value
+ * @return true if success.
+ */
+bool Roboclaw::SpeedPositionM2(uint8_t address, uint32_t speed, uint32_t position, uint8_t flag)
+{
+    return write_n(11, address, M2SPEEDPOS, SetDWORDval(speed), SetDWORDval(position), flag);
+}
+
+/**
+ * Move M1 and M2 from the current postion to the new specified position and hold the new
+ * position. Default accel and decel are used.
+ * @param address Controller address value from 0x80 to 0x87
+ * @param speed1 speed value
+ * @param position1 position value
+ * @param speed2 speed value
+ * @param position2 position value
+ * @return true if success.
+ */
+bool Roboclaw::SpeedPositionM1M2(uint8_t address, uint32_t speed1, uint32_t position1, uint32_t speed2, uint32_t position2, uint8_t flag)
+{
+    return write_n(19, address, MIXEDSPEEDPOS, SetDWORDval(speed1), SetDWORDval(position1), SetDWORDval(speed2), SetDWORDval(position2), flag);
+}
+
 /** 
  * SetM1 Default Duty Acceleration
  * Set the default acceleration for M1 when using duty cycle commands(Cmds 32,33 and 34) or
