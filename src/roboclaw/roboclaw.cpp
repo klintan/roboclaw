@@ -1634,6 +1634,7 @@ bool Roboclaw::ReadM2PositionPID(uint8_t address, float &Kp_fp, float &Ki_fp, fl
  * @param speed speed value
  * @param deccel decceleration value
  * @param position position value
+ * @param flag  0 or 1. If 0 the command will be buffered and executed in the order sent.
  * @return true if success.
  */
 bool Roboclaw::SpeedAccelDeccelPositionM1(uint8_t address, uint32_t accel, uint32_t speed, uint32_t deccel, uint32_t position, uint8_t flag)
@@ -1650,6 +1651,7 @@ bool Roboclaw::SpeedAccelDeccelPositionM1(uint8_t address, uint32_t accel, uint3
  * @param speed speed value
  * @param deccel decceleration value
  * @param position position value
+ * @param flag  0 or 1. If 0 the command will be buffered and executed in the order sent.
  * @return true if success.
  */
 bool Roboclaw::SpeedAccelDeccelPositionM2(uint8_t address, uint32_t accel, uint32_t speed, uint32_t deccel, uint32_t position, uint8_t flag)
@@ -1671,6 +1673,7 @@ bool Roboclaw::SpeedAccelDeccelPositionM2(uint8_t address, uint32_t accel, uint3
  * @param deccel2 decceleration value
  * @param position2 position value
  * @param position2 position value
+ * @param flag  0 or 1. If 0 the command will be buffered and executed in the order sent.
  * @return true if success.
  */
 bool Roboclaw::SpeedAccelDeccelPositionM1M2(uint8_t address, uint32_t accel1, uint32_t speed1, uint32_t deccel1, uint32_t position1, uint32_t accel2, uint32_t speed2, uint32_t deccel2, uint32_t position2, uint8_t flag)
@@ -1684,6 +1687,7 @@ bool Roboclaw::SpeedAccelDeccelPositionM1M2(uint8_t address, uint32_t accel1, ui
  * @param address Controller address value from 0x80 to 0x87
  * @param speed speed value
  * @param position position value
+ * @param flag  0 or 1. If 0 the command will be buffered and executed in the order sent.
  * @return true if success.
  */
 bool Roboclaw::SpeedPositionM1(uint8_t address, uint32_t speed, uint32_t position, uint8_t flag)
@@ -1697,6 +1701,7 @@ bool Roboclaw::SpeedPositionM1(uint8_t address, uint32_t speed, uint32_t positio
  * @param address Controller address value from 0x80 to 0x87
  * @param speed speed value
  * @param position position value
+ * @param flag  0 or 1. If 0 the command will be buffered and executed in the order sent.
  * @return true if success.
  */
 bool Roboclaw::SpeedPositionM2(uint8_t address, uint32_t speed, uint32_t position, uint8_t flag)
@@ -1712,6 +1717,7 @@ bool Roboclaw::SpeedPositionM2(uint8_t address, uint32_t speed, uint32_t positio
  * @param position1 position value
  * @param speed2 speed value
  * @param position2 position value
+ * @param flag  0 or 1. If 0 the command will be buffered and executed in the order sent.
  * @return true if success.
  */
 bool Roboclaw::SpeedPositionM1M2(uint8_t address, uint32_t speed1, uint32_t position1, uint32_t speed2, uint32_t position2, uint8_t flag)
