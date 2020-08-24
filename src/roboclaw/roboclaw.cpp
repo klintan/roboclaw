@@ -1124,7 +1124,7 @@ bool Roboclaw::SpeedAccelM1M2(uint8_t address, uint32_t accel, uint32_t speed1, 
  *
  * @param address Controller address value from 0x80 to 0x87
  * @param speed speed of motor
- * @param distance distance to drice
+ * @param distance distance to drive
  * @param flag  set to a 1 or 0. If a value of 0 is used the command will be buffered
  * and executed in the order sent. If a value of 1 is used the current running command is stopped,
  * any other commands in the buffer are deleted and the new command is executed
@@ -1149,7 +1149,7 @@ bool Roboclaw::SpeedDistanceM1(uint8_t address, uint32_t speed, uint32_t distanc
  *
  * @param address Controller address value from 0x80 to 0x87
  * @param speed speed of motor
- * @param distance distance to drice
+ * @param distance distance to drive
  * @param flag  set to a 1 or 0. If a value of 0 is used the command will be buffered
  * and executed in the order sent. If a value of 1 is used the current running command is stopped,
  * any other commands in the buffer are deleted and the new command is executed
@@ -1765,7 +1765,7 @@ bool Roboclaw::SetPinFunctions(uint8_t address, uint8_t S3mode, uint8_t S4mode, 
 }
 
 /** 
- * Rea mode settings for S3,S4 and S5. See command 74 for mode descriptions
+ * Read mode settings for S3,S4 and S5. See command 74 for mode descriptions
  * @param address Controller address value from 0x80 to 0x87
  * @param S3mode S3mode pin
  * @param S4mode S4mode pin
@@ -1845,7 +1845,7 @@ bool Roboclaw::SetDeadBand(uint8_t address, uint8_t Min, uint8_t Max)
 }
 
 /** 
- * Rea DeadBand for RC/Analog controls
+ * Read DeadBand for RC/Analog controls
  * Read DeadBand settings in 10ths of a percent.
  * @param address Controller address value from 0x80 to 0x87
  * @param Min S3mode pin
@@ -1865,7 +1865,7 @@ bool Roboclaw::GetDeadBand(uint8_t address, uint8_t &Min, uint8_t &Max)
 }
 
 /** 
- * Rea M1 and M2 encoder counters. Quadrature encoders have a range of 0 to 4,294,967,295.
+ * Read M1 and M2 encoder counters. Quadrature encoders have a range of 0 to 4,294,967,295.
  * Absolute encoder values are converted from an analog voltage into a value from 0 to 2047 for
  * the full 2V analog range.
  * @param address Controller address value from 0x80 to 0x87
