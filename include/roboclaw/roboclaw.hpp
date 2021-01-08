@@ -11,6 +11,7 @@
 
 #include <stdarg.h>
 #include <stdint.h>
+#include <iostream>
 
 #include <serial/serial.h>
 

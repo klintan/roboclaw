@@ -384,6 +384,7 @@ uint32_t Roboclaw::read4(uint8_t address, uint8_t cmd, bool *valid)
                     ccrc |= data;
                     if (crc_get() == ccrc)
                     {
+                        std::cout << "success set valid true" << std::endl;
                         *valid = true;
                         return value;
                     }
@@ -403,6 +404,7 @@ uint32_t Roboclaw::read4(uint8_t address, uint8_t cmd, bool *valid)
  */
 uint32_t Roboclaw::read4_1(uint8_t address, uint8_t cmd, uint8_t *status, bool *valid)
 {
+    std::cout << "in read4_1 function" << std::endl;
     if (valid)
         *valid = false;
 
@@ -412,37 +414,58 @@ uint32_t Roboclaw::read4_1(uint8_t address, uint8_t cmd, uint8_t *status, bool *
     do
     {
         flush();
-
         crc_clear();
         write(address);
         crc_update(address);
+        std::cout << "crc_ after address " << crc_ << std::endl; 
         write(cmd);
         crc_update(cmd);
+        std::cout << "command to run " << cmd << std::endl; 
+        std::cout << "crc_ after command " << crc_ << std::endl; 
 
         data = read();
+        std::cout << "data after first read: " << data << std::endl;
         crc_update(data);
-        value = (uint16_t)data << 8;
+        std::cout << "crc_ after first data " << crc_ << std::endl; 
 
+        value = (uint16_t)data << 8;
+        
+        std::cout << "read4_1 function" << std::endl;
         if (data != -1)
         {
             data = read();
             crc_update(data);
             value |= (uint16_t)data;
+            std::cout << "crc_ after second data " << crc_ << std::endl; 
+            std::cout << "data after second read: " << data << std::endl;
         }
+
+
 
         if (data != -1)
         {
             uint16_t ccrc;
             data = read();
+            std::cout << "data after third read: " << data << std::endl;
+
             if (data != -1)
             {
                 ccrc = data << 8;
                 data = read();
+                std::cout << "ccrc from robo after third data " << ccrc << std::endl; 
                 if (data != -1)
                 {
                     ccrc |= data;
+
+                    std::cout << "data after fourth read: " << data << std::endl;
+                    std::cout << "final value: " << value << std::endl;
+
+                    std::cout << "crc "  << crc_get() << std::endl;
+                    std::cout << "ccrc "  << ccrc << std::endl;
+
                     if (crc_get() == ccrc)
                     {
+                        std::cout << "valid read" << std::endl;
                         *valid = true;
                         return value;
                     }
@@ -663,6 +686,8 @@ bool Roboclaw::LeftRightMixed(uint8_t address, uint8_t speed)
  */
 uint32_t Roboclaw::ReadEncM1(uint8_t address, uint8_t *status, bool *valid)
 {
+    std::cout << "call read4_n1" << std::endl;
+    std::cout << "address" << address << std::endl;
     return read4_1(address, GETM1ENC, status, valid);
 }
 
